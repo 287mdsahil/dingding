@@ -1,31 +1,37 @@
 var express = require('express');
-var register = require('./server/register');
+var register = require('./register');
 
 var app = express();
+app.use(express.json());
 
-function getUsers(req, res) {
+app.get('/users', (req, res) => {
     var users = register.getUsersSync();
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.write(JSON.stringify(users));
     res.end();
-}
+});
 
-function addUser(req, res) {
-    var user_id = "irin";
-    var user_data = {"password": "test123"};
+app.post('/users/add', (req, res) => {
+    var user_id = req.body.user_id;
+    var user_data = req.body.user_data;
     register.addUserSync(user_id, user_data);
     res.writeHead(200, {'Content-Type': 'application/json'});
     var users = register.getUsersSync();
     res.write(JSON.stringify(users));
     res.end();
-}
+});
 
-app.get('/users', getUsers);
-app.post('/users/add', addUser);
+app.post('/users/remove', (req, res) => {
+    var user_id = req.body.user_id;
+    register.removeUserSync(user_id);
+    res.writeHead(200, {'Content-Type': 'application/json'});
+    var users = register.getUsersSync();
+    res.write(JSON.stringify(users));
+    res.end();
+});
 
-var server = app.listen(8081, () => {
+var server = app.listen(8081, 'localhost', () => {
     var host = server.address().address;
     var port = server.address().port;
-    console.log(server.address());
     console.log("Listening at http://%s:%s", host, port);
 })
