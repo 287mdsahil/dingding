@@ -10,6 +10,11 @@ function getUsersSync() {
     return JSON.parse(data);
 }
 
+function getUserSync(user_id) {
+    var data = getUsersSync();
+    return data[user_id];
+}
+
 function setUsersSync(data) {
     fs.writeFileSync(
         __dirname + '/' + filename,
@@ -31,5 +36,6 @@ function removeUserSync(user_id) {
 }
 
 module.exports.getUsersSync = getUsersSync;
+module.exports.getUserSync = getUserSync;
 module.exports.addUserSync = addUserSync;
 module.exports.removeUserSync = removeUserSync;
