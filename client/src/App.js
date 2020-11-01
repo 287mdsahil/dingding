@@ -22,7 +22,7 @@ function App() {
                         background: "var(--background-secondary)",
                         display: 'flex',
                         flexDirection: 'column',
-    					scrollbarColor: 'var(--background) transparent',
+    					scrollbarColor: 'var(--surface) transparent',
                     }}>
                         <Row style={{
                             height: "100%",
