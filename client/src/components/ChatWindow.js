@@ -12,7 +12,9 @@ function Message() {
 				margin: '0 10px',
 				background: 'var(--surface)',
 				borderRadius: 5
-			}}>Test Message</span>
+			}}>
+                Test Message
+            </span>
 		</div>
 	);
 }

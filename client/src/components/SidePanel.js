@@ -1,4 +1,15 @@
-import Nav from 'react-bootstrap/Nav'
+function ContactCard() {
+    return (
+        <div style={{
+            padding: 10,
+            borderBottom: 'solid',
+            borderWidth: 1,
+            borderColor: 'var(--surface)',
+        }}>
+            Dummy Contact
+        </div>
+    );
+}
 
 function Sidepanel() {
     return (
@@ -8,22 +19,30 @@ function Sidepanel() {
             display: 'flex',
             flexDirection: 'column',
             flexGrow: 2,
-            overflowY: 'auto'
+            overflowY: 'auto',
+    		scrollbarColor: 'var(--surface) transparent',
         }}>
-            <Nav.Item>
-                <Nav.Link href="/home">Active</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-                <Nav.Link eventKey="link-1">Link</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-                <Nav.Link eventKey="link-2">Link</Nav.Link>
-            </Nav.Item>
-            <Nav.Item>
-                <Nav.Link eventKey="disabled" disabled>
-                    Disabled
-    			</Nav.Link>
-            </Nav.Item>
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
+            <ContactCard />
         </div>
     );
 }
