@@ -3,6 +3,8 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import './App.css';
 import Sidepanel from './components/SidePanel';
+import ChatWindow from './components/ChatWindow';
+import MessageBox from './components/MessageBox';
 
 function App() {
     return (
@@ -16,20 +18,21 @@ function App() {
                         <Sidepanel />
                     </Col>
                     <Col style={{
-                        height: "100vh",
+                        height: "calc(100vh - 70px)",
                         background: "var(--background-secondary)",
                         display: 'flex',
-                        flexDirection: 'column'
+                        flexDirection: 'column',
+    					scrollbarColor: 'var(--background) transparent',
                     }}>
                         <Row style={{
                             height: "100%",
                             order: 1
-                        }}>Chats</Row>
+                        }}><ChatWindow /></Row>
                         <Row style={{
-                            height: "70px",
-                            background: "var(--surface)", 
-                            order:2
-                        }}>Type here</Row>
+                            minHeight: "70px",
+                            background: "var(--surface)",
+                            order: 2
+                        }}><MessageBox /></Row>
                     </Col>
                 </Row>
             </Container>
