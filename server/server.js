@@ -1,7 +1,9 @@
 var express = require('express');
 var register = require('./register');
+var cors = require('cors');
 
 var app = express();
+app.use(cors());
 app.use(express.json());
 
 app.get('/users', (req, res) => {
@@ -15,7 +17,7 @@ app.post('/users/add', (req, res) => {
     var user_id = req.body.user_id;
     var user_data = req.body.user_data;
     register.addUserSync(user_id, user_data);
-    res.writeHead(200, {'Content-Type': 'application/json'});
+    res.writeHead(200, {'Content-Type': 'application/json',});
     var users = register.getUsersSync();
     res.write(JSON.stringify(users));
     res.end();

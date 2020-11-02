@@ -1,41 +1,15 @@
-import Container from 'react-bootstrap/Container';
-import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/Row';
 import './App.css';
-import Sidepanel from './components/SidePanel';
-import ChatWindow from './components/ChatWindow';
-import MessageBox from './components/MessageBox';
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
+import LoginScreen from './components/LoginScreen';
+import ChatScreen from './components/ChatScreen';
 
 function App() {
     return (
         <div className="App">
-            <Container fluid>
-                <Row style={{minHeight: "100vh"}}>
-                    <Col
-                        xs={2}
-                        md={2}
-                    >
-                        <Sidepanel />
-                    </Col>
-                    <Col style={{
-                        height: "calc(100vh - 70px)",
-                        background: "var(--background-secondary)",
-                        display: 'flex',
-                        flexDirection: 'column',
-    					scrollbarColor: 'var(--surface) transparent',
-                    }}>
-                        <Row style={{
-                            height: "100%",
-                            order: 1
-                        }}><ChatWindow /></Row>
-                        <Row style={{
-                            minHeight: "70px",
-                            background: "var(--surface)",
-                            order: 2
-                        }}><MessageBox /></Row>
-                    </Col>
-                </Row>
-            </Container>
+            <Router><Switch>
+                <Route exact path="/" component={ChatScreen} />    
+                <Route exact path="/login/" component={LoginScreen} />
+            </Switch></Router>
         </div>
     );
 }
