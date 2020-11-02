@@ -15,16 +15,34 @@ function LoginScreen(props) {
 
 	useEffect(CheckId);
 
-	var login = ()=> {
+	// Login function
+	var login = () => {
 		console.log('Logging in');
-		setCookie('id','sahil');
+		const postOptions = {
+			method: "POST",
+			headers: {"Content-Type": "application/json"},
+			body: JSON.stringify({
+				"user_id": userid.current,
+				"password": passwd.current,
+			}),
+		};
+		fetch("http://localhost:5000/user/login", postOptions)
+			.then(response => {
+				if (!response.ok) {
+					console.log("Failed with HTTP code: " + response.status);
+				} else {
+					var data = response.json();
+					setCookie("id", data.user_id);
+				}
+			});
 	};
 
+	// Signup function
 	var signup = () => {
 		console.log('Signin in');
 		const postOptions = {
-			method:"POST",
-			headers: {"Content-Type":"application/json"},
+			method: "POST",
+			headers: {"Content-Type": "application/json"},
 			body: JSON.stringify({
 				"user_id": userid.current,
 				"user_data": {
@@ -33,17 +51,17 @@ function LoginScreen(props) {
 			}),
 		};
 		fetch("http://localhost:5000/users/add", postOptions)
-		.then(response => {
-			if(!response.ok) {
-				console.log("Failed with HTTP code: " + response.status);
-				return {};
-			} else {
-				return response.json;
-			}
-		})
-		.then(data=>{
-			setCookie("id",data.id);
-		});
+			.then(response => {
+				if (!response.ok) {
+					console.log("Failed with HTTP code: " + response.status);
+					return {};
+				} else {
+					return response.json;
+				}
+			})
+			.then(data => {
+				setCookie("id", data.id);
+			});
 	};
 
 	return (
@@ -56,7 +74,7 @@ function LoginScreen(props) {
 				show={true}
 				size="lg"
 				centered
-				onHide = {()=>{/*do nothing*/}}
+				onHide={() => {/*do nothing*/}}
 			>
 				<Modal.Header
 					style={{background: 'var(--background-secondary)'}}
@@ -68,7 +86,7 @@ function LoginScreen(props) {
 				>
 					<Form>
 						<Form.Group controlId="userid"
-							onChange={e=>{
+							onChange={e => {
 								userid.current = e.target.value;
 							}}
 						>
@@ -79,20 +97,20 @@ function LoginScreen(props) {
 						</Form.Group>
 
 						<Form.Group controlId="password"
-							onChange={e=>{
+							onChange={e => {
 								passwd.current = e.target.value;
 							}}
 						>
 							<Form.Label>Password</Form.Label>
 							<Form.Control type="password" placeholder="Password" />
 						</Form.Group>
-						<Button 
+						<Button
 							variant="primary"
 							onClick={login}
 						>
 							Login
   						</Button>
-						<Button 
+						<Button
 							variant="secondary"
 							onClick={signup}
 						>
