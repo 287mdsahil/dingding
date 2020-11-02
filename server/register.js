@@ -15,6 +15,11 @@ function getUserSync(user_id) {
     return data[user_id];
 }
 
+function getUserConnectionsSync(user_id) {
+    var data = getUserSync(user_id);
+    return data.connections;
+}
+
 function setUsersSync(data) {
     fs.writeFileSync(
         __dirname + '/' + filename,
@@ -39,3 +44,4 @@ module.exports.getUsersSync = getUsersSync;
 module.exports.getUserSync = getUserSync;
 module.exports.addUserSync = addUserSync;
 module.exports.removeUserSync = removeUserSync;
+module.exports.getUserConnectionsSync = getUserConnectionsSync;

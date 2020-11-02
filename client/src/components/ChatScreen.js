@@ -6,13 +6,19 @@ import ChatWindow from './ChatWindow';
 import MessageBox from './MessageBox';
 import {useCookies} from 'react-cookie';
 import {useEffect} from 'react';
+import openSocket from 'socket.io-client';
 
 function ChatScreen(props) {
-	const [cookies] = useCookies(["id"]);
-	var CheckId = () => {
-		if (!cookies.id) props.history.push('/login/');
-	};
-	useEffect(CheckId);
+
+
+    const [cookies] = useCookies(["id"]);
+    var CheckId = () => {
+        if (!cookies.id) props.history.push('/login/');
+    };
+    useEffect(CheckId);
+
+    const socket = openSocket("http://localhost:5001");
+    socket.emit('user-connected', cookies.id)
 
     return (
         <Container fluid>

@@ -1,4 +1,7 @@
-function ContactCard() {
+import {useState}  from 'react';
+import {useCookies} from 'react-cookie';
+
+function ContactCard(props) {
     return (
         <div style={{
             padding: 10,
@@ -6,12 +9,33 @@ function ContactCard() {
             borderWidth: 1,
             borderColor: 'var(--surface)',
         }}>
-            Dummy Contact
+            {props.cid}
         </div>
     );
 }
 
-function Sidepanel() {
+function Sidepanel() { 
+
+    const [connections, setConnections] = useState(null);
+	const [cookies] = useCookies(["id"]);
+
+    var fetchConnections = () => { 
+		fetch("http://localhost:5000/user/"+cookies.id+"/connections")
+			.then(response => {
+				if (!response.ok) {
+					console.log("Failed with HTTP code: " + response.status);
+                    return {};
+				} else {
+                    return response.json();
+				}
+			}).then(data => {
+                console.log(connections);
+                if(connections == null)
+                    setConnections(data);
+			});
+    };
+    fetchConnections();
+
     return (
         <div style={{
             background: 'var(--background)', 
@@ -22,27 +46,11 @@ function Sidepanel() {
             overflowY: 'auto',
     		scrollbarColor: 'var(--surface) transparent',
         }}>
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
-            <ContactCard />
+            {connections!=null &&
+                connections.map((cid,index) => {
+                    return <ContactCard cid={cid} key={index} />
+                })
+            }
         </div>
     );
 }

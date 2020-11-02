@@ -30,10 +30,14 @@ function LoginScreen(props) {
 			.then(response => {
 				if (!response.ok) {
 					console.log("Failed with HTTP code: " + response.status);
+                    return {};
 				} else {
-					var data = response.json();
-					setCookie("id", data.user_id);
+                    return response.json();
 				}
+			}).then(data => {
+                console.log(data);
+                if(data.user_id !== undefined)
+                    setCookie("id", data.user_id);
 			});
 	};
 
@@ -60,7 +64,9 @@ function LoginScreen(props) {
 				}
 			})
 			.then(data => {
-				setCookie("id", data.id);
+                if(data.id !== undefined) {
+				    setCookie("id", data.id);
+                }
 			});
 	};
 

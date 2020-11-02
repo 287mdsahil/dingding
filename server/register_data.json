@@ -1,1 +1,1 @@
-{"sahil":{"password":"testpass"},"sahl":{"password":"asdf"}}
+{"bikram":{"password":"test","connections":["sahil"]},"sahil":{"password":"test","connections":["bikram"]}}
