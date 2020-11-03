@@ -20,6 +20,17 @@ function getUserConnectionsSync(user_id) {
     return data.connections;
 }
 
+function addUserConnectionSync(user_id, c_id, c_data) {
+    if (getUserSync(c_id) != undefined) {
+        if (getUserSync(user_id) != undefined && user_id !== c_id) {
+            var data = getUsersSync();
+            data[user_id]["connections"][c_id]=c_data;
+            setUsersSync(data);
+            return data[user_id]["connections"];
+        }
+    }
+}
+
 function setUsersSync(data) {
     fs.writeFileSync(
         __dirname + '/' + filename,
@@ -45,3 +56,4 @@ module.exports.getUserSync = getUserSync;
 module.exports.addUserSync = addUserSync;
 module.exports.removeUserSync = removeUserSync;
 module.exports.getUserConnectionsSync = getUserConnectionsSync;
+module.exports.addUserConnectionSync = addUserConnectionSync;

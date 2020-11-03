@@ -6,6 +6,13 @@ var app = express();
 app.use(cors());
 app.use(express.json());
 
+app.options('/login', function (req, res) {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    res.setHeader("Access-Control-Allow-Headers", "*");
+    res.end();
+});
+
 app.get('/users', (req, res) => {
     var users = register.getUsersSync();
     res.writeHead(200, {'Content-Type': 'application/json'});
@@ -33,10 +40,22 @@ app.post('/user/login', (req, res) => {
 
 app.get('/user/:id/connections', (req, res) => {
     var user_id = req.params.id;
-    console.log(user_id);
-    var connections = register.getUserConnectionsSync(user_id);
+    var connections = [];
+    if (user_id != undefined)
+        connections = register.getUserConnectionsSync(user_id);
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.write(JSON.stringify(connections));
+    res.end();
+});
+
+app.post('/user/:id/connections/add', (req, res) => {
+    var user_id = req.params.id;
+    var c_id = req.body.c_id;
+    var c_data = req.body.c_data;
+    console.log(user_id + ":" + c_id);
+    if (user_id != undefined)
+        register.addUserConnectionSync(user_id, c_id, c_data);
+    res.writeHead(200);
     res.end();
 });
 
@@ -82,6 +101,4 @@ io.on('connection', (socket) => {
         }
     });
 });
-
-
 

@@ -1,1 +1,1 @@
-{"bikram":{"password":"test","connections":["sahil"]},"sahil":{"password":"test","connections":["bikram"]}}
+{"bikram":{"password":"test","connections":{"sahil":{"type":"u"}}},"sahil":{"password":"test","connections":{}}}
