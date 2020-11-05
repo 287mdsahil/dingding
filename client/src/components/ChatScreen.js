@@ -4,9 +4,9 @@ import Row from 'react-bootstrap/Row';
 import Sidepanel from './SidePanel';
 import ChatWindow from './ChatWindow';
 import MessageBox from './MessageBox';
+import {useReducer} from 'react';
 import {useCookies} from 'react-cookie';
-import openSocket from 'socket.io-client';
-import {Route} from 'react-router-dom';
+import {Route, useHistory} from 'react-router-dom';
 
 function ChatContainer(props) {
     return (
@@ -30,12 +30,12 @@ function ChatContainer(props) {
             <Row style={{
                 height: "calc(100vh - 60px  - 70px)",
                 order: 1
-            }}><ChatWindow /></Row>
+            }}><ChatWindow {...props} /></Row>
             <Row style={{
                 minHeight: "70px",
                 background: "var(--background)",
                 order: 2
-            }}><MessageBox /></Row>
+            }}><MessageBox onSend={props.onSend} /></Row>
         </Col>
 
     );
@@ -43,15 +43,59 @@ function ChatContainer(props) {
 
 function ChatScreen(props) {
     const [cookies] = useCookies(["id"]);
-
+    let history = useHistory();
     var CheckId = () => {
-        if (!cookies.id) props.history.push('/login/');
+        if (!cookies.id) {
+            console.log("ChatScreen");
+            history.push('/login/');
+        }
     };
     CheckId();
 
+    function hangleMessages(messages, action) {
+        /**
+         * action: {
+         *     "type" : "...",
+         *     "message" : {
+         *         "body" : "...",
+         *         "timestamp" : "...",
+         *         "from" : "...",   // uid or gid or broadcast message
+         *         "sender" : "...", // Id of user who wrote the message
+         *     }
+         * }
+         * */
+        switch (action.type) {
+            case 'append':
+                console.log("dispatch called");
+                console.log(messages);
+                if (messages[action.message.from] === undefined)
+                    messages[action.message.from] = [];
+                messages[action.message.from].push(action.message);
+                let newMessages = {...messages};
+                messages = newMessages;
+                return messages;
+            default: return messages;
+        }
+    };
+    const [messages, messageDispatch] = useReducer(hangleMessages, {});
+    var sendMessage = () => {
+        messageDispatch({
+            type: "append",
+            message: {
+                body: "Hello World1!",
+                from: "bikram",
+                sender: "bikram",
+            },
+        });
+    };
 
-    const socket = openSocket("http://localhost:5001");
-    socket.emit('user-connected', cookies.id)
+    console.log("Messages:");
+    console.log(messages);
+    //const socket = openSocket("http://localhost:5001");
+    // First user connection
+    //props.socket.emit('user-connected', cookies.id)
+
+    // On receiving message from server
 
     return (
         <Container fluid style={{
@@ -64,9 +108,15 @@ function ChatScreen(props) {
                 >
                     <Sidepanel history={props.history} />
                 </Col>
-                <Route path="/:type/:c_id"
-                    component={(props) => <ChatContainer {...props} socket={socket} />}
-                />
+                {messages &&
+                    <Route path="/:type/:c_id"
+                        component={(props) =>
+                            <ChatContainer {...props}
+                                messages={messages}
+                                socket={props.socket}
+                                onSend={sendMessage}
+                            />}
+                    />}
             </Row>
         </Container>
     );

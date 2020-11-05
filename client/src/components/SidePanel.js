@@ -1,5 +1,6 @@
 import {useState, useRef} from 'react';
 import {useCookies} from 'react-cookie';
+import {useHistory} from 'react-router-dom';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import InputGroup from 'react-bootstrap/InputGroup';
@@ -7,18 +8,19 @@ import FormControl from 'react-bootstrap/FormControl';
 import {useLocation} from 'react-router-dom'
 
 
-function Sidepanel(props) {
+function Sidepanel() {
 
     const [connections, setConnections] = useState(null);
     const [cookies] = useCookies(["id"]);
     const loc = useLocation();
+    const history = useHistory();
 
     function ContactCard(cprops) {
         var onClickHandler = () => {
             const url = "/" + cprops.data.type + "/" + cprops.cid;
             console.log(url);
             if (url !== loc.pathname)
-                props.history.push(url);
+                history.push(url);
         }
         return (
             <div style={{
@@ -123,7 +125,7 @@ function Sidepanel(props) {
                         return response.json();
                     }
                 }).then(data => {
-                    console.log(data);
+                    //console.log(data);
                     setConnections(data);
                 })
                 .catch(err => {

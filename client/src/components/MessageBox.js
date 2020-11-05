@@ -3,7 +3,7 @@ import Form from 'react-bootstrap/Form';
 
 
 
-function MessageBox() {
+function MessageBox(props) {
 	return (<Form style={{
 		display: 'flex',
 		flexDirection: 'row',
@@ -16,9 +16,12 @@ function MessageBox() {
 			margin: 'auto'
 		}}
 		/>
-		<Button variant="primary" style={{
-			margin: 'auto'
-		}}>
+		<Button variant="primary" 
+            style={{
+			    margin: 'auto'
+		    }}
+            onClick={props.onSend}
+        >
 		Send
   		</Button>
 	</Form>);
