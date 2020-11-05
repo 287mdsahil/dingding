@@ -4,7 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Sidepanel from './SidePanel';
 import ChatWindow from './ChatWindow';
 import MessageBox from './MessageBox';
-import {useState, useRef} from 'react';
+import {useState, useEffect} from 'react';
 import {useCookies} from 'react-cookie';
 import {Route, useHistory} from 'react-router-dom';
 
@@ -30,12 +30,16 @@ function ChatContainer(props) {
             <Row style={{
                 height: "calc(100vh - 60px  - 70px)",
                 order: 1
-            }}><ChatWindow {...props} /></Row>
+            }}>
+                <ChatWindow
+                    messages={props.messages[props.match.params.c_id]}
+                />
+            </Row>
             <Row style={{
                 minHeight: "70px",
                 background: "var(--background)",
                 order: 2
-            }}><MessageBox onSend={props.onSend} /></Row>
+            }}><MessageBox {...props} onSend={props.onSend} /></Row>
         </Col>
 
     );
@@ -43,21 +47,23 @@ function ChatContainer(props) {
 
 function ChatScreen(props) {
     const [cookies] = useCookies(["id"]);
-    let history = useHistory();
+    const [messages, setMessage] = useState({});
+
     var CheckId = () => {
+        let history = useHistory();
         if (!cookies.id) {
             history.push('/login/');
         }
     };
     CheckId();
 
-    const count = useRef(0);
-
-    function hangleMessages(action) {
+    // Function that operates on messages
+    const handleMessages = (action) => {
         /**
          * action: {
          *     "type" : "...",
          *     "message" : {
+         *         "type: : "...", // text message or other media
          *         "body" : "...",
          *         "timestamp" : "...",
          *         "from" : "...",   // uid or gid or broadcast message
@@ -65,29 +71,56 @@ function ChatScreen(props) {
          *     }
          * }
          * */
-        count.current = count.current + 1;
+        let newMessages = {...messages};
         switch (action.type) {
-            case 'append':
-                let newMessages = {...messages};
-                if (messages[action.message.c_id] === undefined)
-                    newMessages[action.message.c_id] = [];
-                newMessages[action.message.c_id].push(action.message);
+            case 'self-append':
+                if (newMessages[action.message.receiver] === undefined)
+                    newMessages[action.message.receiver] = [];
+                newMessages[action.message.receiver].push(action.message);
                 setMessage(newMessages);
-                return messages;
-            default: return messages;
+                break;
+            case 'append':
+                if (newMessages[action.message.sender] === undefined)
+                    newMessages[action.message.sender] = [];
+                newMessages[action.message.sender].push(action.message);
+                setMessage(newMessages);
+                break;
+            default: //donothing
         }
+        return messages;
     };
-    const [messages, setMessage] = useState({});
-    var sendMessage = (text) => {
-        hangleMessages({
+
+    // Function to append self messages
+    var sendMessage = (text, c_id) => {
+        var message = {
+            contentType: "text",
+            type: "u",
+            body: text,
+            receiver: c_id,
+            sender: cookies.id,
+            timestamp: null,
+        };
+        handleMessages({
             type: "append",
-            message: {
-                body: text,
-                c_id: "bikram",
-                sender: cookies.id,
-            },
+            message: message,
         });
+        handleMessages({
+            type: "self-append",
+            message: message,
+        });
+        props.socket.emit("send-message", message);
     };
+
+    // Function to handle incomming messages
+    var receiveMessage = () => {
+        props.socket.on("receive-message", (message) => {
+            handleMessages({
+                type: "append",
+                message: message,
+            });
+        })
+    }
+    useEffect(receiveMessage, []);
 
     return (
         <Container fluid style={{

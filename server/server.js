@@ -94,11 +94,15 @@ const onlineUsers = {};
 const io = require('socket.io')(5001);
 io.origins('*:*');
 io.on('connection', (socket) => {
-    console.log("Connection made");
     socket.on('user-connected', (user_id) => {
         if (user_id != null) {
             onlineUsers[user_id] = socket;
+            console.log("Connected:" + user_id);
         }
     });
-});
 
+    socket.on('send-message', (message) => {
+        console.log(message);
+        onlineUsers[message.receiver].emit('receive-message', message);
+    });
+});

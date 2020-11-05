@@ -27,7 +27,7 @@ function MessageBox(props) {
 		    }}
             onClick={(e)=>{
                 e.preventDefault();
-                props.onSend(text.current);
+                props.onSend(text.current,props.match.params.c_id);
             }}
         >
 		Send

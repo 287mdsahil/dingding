@@ -1,4 +1,5 @@
 import {useCookies} from 'react-cookie';
+
 function Message(props) {
     return (
         <div style={{
@@ -24,6 +25,7 @@ function Message(props) {
 
 function ChatWindow(props) {
     const [cookies] = useCookies(["id"]);
+
     return (
         <div style={{
             display: 'flex',
@@ -34,8 +36,7 @@ function ChatWindow(props) {
             overflowY: 'auto',
         }}>
             {props.messages &&
-                props.messages[props.match.params.c_id] &&
-                props.messages[props.match.params.c_id].map((message, index) => {
+                props.messages.map((message, index) => {
                     return (
                         <Message
                             text={message.body}
