@@ -18,7 +18,6 @@ function Sidepanel() {
     function ContactCard(cprops) {
         var onClickHandler = () => {
             const url = "/" + cprops.data.type + "/" + cprops.cid;
-            console.log(url);
             if (url !== loc.pathname)
                 history.push(url);
         }
@@ -125,7 +124,6 @@ function Sidepanel() {
                         return response.json();
                     }
                 }).then(data => {
-                    //console.log(data);
                     setConnections(data);
                 })
                 .catch(err => {

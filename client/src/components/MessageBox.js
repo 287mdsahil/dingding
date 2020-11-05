@@ -1,9 +1,12 @@
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import {useRef} from 'react';
 
 
 
 function MessageBox(props) {
+    const text = useRef(null);
+
 	return (<Form style={{
 		display: 'flex',
 		flexDirection: 'row',
@@ -15,12 +18,17 @@ function MessageBox(props) {
 		style={{
 			margin: 'auto'
 		}}
+        onChange={e=>text.current=e.target.value}
 		/>
-		<Button variant="primary" 
+		<Button variant="primary"
+            type="submit" 
             style={{
 			    margin: 'auto'
 		    }}
-            onClick={props.onSend}
+            onClick={(e)=>{
+                e.preventDefault();
+                props.onSend(text.current);
+            }}
         >
 		Send
   		</Button>

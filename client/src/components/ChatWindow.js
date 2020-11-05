@@ -1,3 +1,4 @@
+import {useCookies} from 'react-cookie';
 function Message(props) {
     return (
         <div style={{
@@ -15,17 +16,14 @@ function Message(props) {
                 background: 'var(--surface)',
                 borderRadius: 5,
             }}>
-               {props.text}
+                {props.text}
             </span>
         </div>
     );
 }
 
 function ChatWindow(props) {
-    console.log("M");
-    console.log(props.messages);
-    console.log(props.match.params.c_id);
-    console.log(props.messages[props.match.params.c_id]);
+    const [cookies] = useCookies(["id"]);
     return (
         <div style={{
             display: 'flex',
@@ -35,13 +33,15 @@ function ChatWindow(props) {
             flexGrow: 2,
             overflowY: 'auto',
         }}>
-            <Message fromSelf text="dummy message" />
-            <Message text="dummy message" />
             {props.messages &&
                 props.messages[props.match.params.c_id] &&
-                props.messages[props.match.params.c_id].map((message,index) => {
+                props.messages[props.match.params.c_id].map((message, index) => {
                     return (
-                        <Message text={message.body} key={index}/>
+                        <Message
+                            text={message.body}
+                            fromSelf={message.sender === cookies.id}
+                            key={index}
+                        />
                     );
                 })}
         </div>

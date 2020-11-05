@@ -4,7 +4,7 @@ import Row from 'react-bootstrap/Row';
 import Sidepanel from './SidePanel';
 import ChatWindow from './ChatWindow';
 import MessageBox from './MessageBox';
-import {useReducer} from 'react';
+import {useState, useRef} from 'react';
 import {useCookies} from 'react-cookie';
 import {Route, useHistory} from 'react-router-dom';
 
@@ -46,13 +46,14 @@ function ChatScreen(props) {
     let history = useHistory();
     var CheckId = () => {
         if (!cookies.id) {
-            console.log("ChatScreen");
             history.push('/login/');
         }
     };
     CheckId();
 
-    function hangleMessages(messages, action) {
+    const count = useRef(0);
+
+    function hangleMessages(action) {
         /**
          * action: {
          *     "type" : "...",
@@ -64,38 +65,29 @@ function ChatScreen(props) {
          *     }
          * }
          * */
+        count.current = count.current + 1;
         switch (action.type) {
             case 'append':
-                console.log("dispatch called");
-                console.log(messages);
-                if (messages[action.message.from] === undefined)
-                    messages[action.message.from] = [];
-                messages[action.message.from].push(action.message);
                 let newMessages = {...messages};
-                messages = newMessages;
+                if (messages[action.message.c_id] === undefined)
+                    newMessages[action.message.c_id] = [];
+                newMessages[action.message.c_id].push(action.message);
+                setMessage(newMessages);
                 return messages;
             default: return messages;
         }
     };
-    const [messages, messageDispatch] = useReducer(hangleMessages, {});
-    var sendMessage = () => {
-        messageDispatch({
+    const [messages, setMessage] = useState({});
+    var sendMessage = (text) => {
+        hangleMessages({
             type: "append",
             message: {
-                body: "Hello World1!",
-                from: "bikram",
-                sender: "bikram",
+                body: text,
+                c_id: "bikram",
+                sender: cookies.id,
             },
         });
     };
-
-    console.log("Messages:");
-    console.log(messages);
-    //const socket = openSocket("http://localhost:5001");
-    // First user connection
-    //props.socket.emit('user-connected', cookies.id)
-
-    // On receiving message from server
 
     return (
         <Container fluid style={{
