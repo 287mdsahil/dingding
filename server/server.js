@@ -62,7 +62,7 @@ app.post('/user/:id/connections/add', (req, res) => {
 app.post('/users/add', (req, res) => {
     var user_id = req.body.user_id;
     var user_data = req.body.user_data;
-    user_data.connections = [];
+    user_data.connections = {};
     register.addUserSync(user_id, user_data);
     res.writeHead(200, {'Content-Type': 'application/json', });
     var user_data = register.getUserSync(user_id);
