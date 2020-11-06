@@ -47,7 +47,7 @@ function ChatContainer(props) {
 
 function ChatScreen(props) {
     const [cookies] = useCookies(["id"]);
-    const [messages, setMessage] = useState({});
+    const [messages, setMessages] = useState({});
 
     var CheckId = () => {
         let history = useHistory();
@@ -56,6 +56,7 @@ function ChatScreen(props) {
         }
     };
     CheckId();
+
 
     // Function that operates on messages
     const handleMessages = (action) => {
@@ -71,23 +72,26 @@ function ChatScreen(props) {
          *     }
          * }
          * */
-        let newMessages = {...messages};
+        var newMessages;
         switch (action.type) {
-            case 'self-append':
-                if (newMessages[action.message.receiver] === undefined)
-                    newMessages[action.message.receiver] = [];
-                newMessages[action.message.receiver].push(action.message);
-                setMessage(newMessages);
+            case 'self-append': {
+                if (messages[action.message.receiver] === undefined)
+                    messages[action.message.receiver] = [];
+                messages[action.message.receiver].push(action.message);
+                newMessages = {...messages};
+                setMessages(newMessages);
                 break;
-            case 'append':
-                if (newMessages[action.message.sender] === undefined)
-                    newMessages[action.message.sender] = [];
-                newMessages[action.message.sender].push(action.message);
-                setMessage(newMessages);
+            }
+            case 'append': {
+                if (messages[action.message.sender] === undefined)
+                    messages[action.message.sender] = [];
+                messages[action.message.sender].push(action.message);
+                newMessages = {...messages};
+                setMessages(newMessages);
                 break;
+            }
             default: //donothing
         }
-        return messages;
     };
 
     // Function to append self messages
