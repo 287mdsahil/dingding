@@ -16,15 +16,20 @@ function getUserSync(user_id) {
 }
 
 function getUserConnectionsSync(user_id) {
+    if (user_id === undefined)
+        return {};
     var data = getUserSync(user_id);
-    return data.connections;
+    if (data === undefined)
+        return {};
+    else
+        return data.connections;
 }
 
 function addUserConnectionSync(user_id, c_id, c_data) {
     if (getUserSync(c_id) != undefined) {
         if (getUserSync(user_id) != undefined && user_id !== c_id) {
             var data = getUsersSync();
-            data[user_id]["connections"][c_id]=c_data;
+            data[user_id]["connections"][c_id] = c_data;
             setUsersSync(data);
             return data[user_id]["connections"];
         }
@@ -41,6 +46,7 @@ function setUsersSync(data) {
 
 function addUserSync(user_id, user_data) {
     var data = getUsersSync();
+    user_data.connections = {"broadcast": {"type": "b", }, };
     data[user_id] = user_data;
     setUsersSync(data);
 }

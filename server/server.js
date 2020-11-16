@@ -1,6 +1,7 @@
 var express = require('express');
 var register = require('./register');
 var cors = require('cors');
+var path = require('path');
 
 var app = express();
 app.use(cors());
@@ -62,13 +63,18 @@ app.post('/user/:id/connections/add', (req, res) => {
 app.post('/users/add', (req, res) => {
     var user_id = req.body.user_id;
     var user_data = req.body.user_data;
-    user_data.connections = {};
     register.addUserSync(user_id, user_data);
     res.writeHead(200, {'Content-Type': 'application/json', });
     var user_data = register.getUserSync(user_id);
     var user = {"user_id": user_id, "user_data": user_data};
     res.write(JSON.stringify(user));
     res.end();
+});
+
+app.post('/groups/add', (req, res) => {
+    var group_id = req.body.group_id;
+    var users = req.body.users;
+    register.addGroupSync(group_id, users);
 });
 
 app.post('/users/remove', (req, res) => {
@@ -91,7 +97,7 @@ var server = app.listen(5000, () => {
 
 const onlineUsers = {};
 
-const io = require('socket.io')(5001);
+const io = require('socket.io').listen(server);
 io.origins('*:*');
 io.on('connection', (socket) => {
     socket.on('user-connected', (user_id) => {
@@ -103,6 +109,15 @@ io.on('connection', (socket) => {
 
     socket.on('send-message', (message) => {
         console.log(message);
-        onlineUsers[message.receiver].emit('receive-message', message);
+        if (message.type == 'u') {
+            onlineUsers[message.receiver].emit('receive-message', message);
+            console.log("Sending to : " + message.receiver);
+        } else if (message.type == 'b')
+            for (var user_id in onlineUsers) {
+                if (user_id != message.sender) {
+                    console.log("Sending to : " + user_id);
+                    onlineUsers[user_id].emit('receive-message', message);
+                }
+            }
     });
 });

@@ -35,6 +35,53 @@ function Sidepanel() {
         );
     }
 
+    function AddGroupPanel() {
+        const [show, setShow] = useState(false);
+        const cid = useRef(null);
+        const handleClose = () => setShow(false);
+        const handleShow = () => setShow(true);
+
+        return (
+            <span style={{
+                height: 60,
+                paddingRight: 10,
+            }}>
+                <Button variant="primary" onClick={handleShow}>
+                    +g
+				</Button>
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton
+                        style={{background: 'var(--surface)'}}
+                    >
+                        <Modal.Title>Create new group</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body
+                        style={{background: 'var(--surface)'}}
+                    >
+                        <InputGroup className="mb-3">
+                            <FormControl
+                                placeholder="Connection's username"
+                                aria-label="Connection's username"
+                                onChange={e => {cid.current = e.target.value}}
+                            />
+                            <InputGroup.Append>
+                                <Button variant="primary"
+                                >Button</Button>
+                            </InputGroup.Append>
+                        </InputGroup>
+                    </Modal.Body>
+                    <Modal.Footer
+                        style={{background: 'var(--surface)'}}
+                    >
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                    </Button>
+                    </Modal.Footer>
+                </Modal>
+            </span>
+        );
+    }
+
     function AddConnectionPanel() {
         const [show, setShow] = useState(false);
         const cid = useRef(null);
@@ -69,16 +116,13 @@ function Sidepanel() {
         const handleShow = () => setShow(true);
 
         return (
-            <div style={{
-                padding: 10,
-                borderBottom: 'solid',
-                borderWidth: 1,
-                borderColor: 'var(--surface)',
+            <span style={{
                 height: 60,
+                paddingRight: 10,
             }}>
                 <Button variant="primary" onClick={handleShow}>
-                    Add Connection
-            </Button>
+                    +u
+            	</Button>
 
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton
@@ -109,7 +153,7 @@ function Sidepanel() {
                     </Button>
                     </Modal.Footer>
                 </Modal>
-            </div>
+            </span>
         );
     }
 
@@ -143,7 +187,16 @@ function Sidepanel() {
             overflowY: 'auto',
             scrollbarColor: 'var(--surface) transparent',
         }}>
-            <AddConnectionPanel />
+            <div style={{
+                height: 60,
+                padding: 10,
+                borderBottom: 'solid',
+                borderWidth: 1,
+                borderColor: 'var(--surface)',
+            }}>
+                <AddConnectionPanel />
+                <AddGroupPanel />
+            </div>
             {connections && Object.keys(connections).map((cid, index) => {
                 return <ContactCard cid={cid} key={index} data={connections[cid]} />
             })}

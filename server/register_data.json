@@ -1,1 +1,1 @@
-{"bikram":{"password":"test","connections":{"sahil":{"type":"u"}}},"sahil":{"password":"test","connections":{"bikram":{"type":"u"},"irin":{"type":"u"}}},"irin":{"password":"test","connections":{"sahil":{"type":"u"},"bikram":{"type":"u"}}}}
+{"sahil":{"password":"test","connections":{"broadcast":{"type":"b"},"bikram":{"type":"u"}}},"bikram":{"password":"test","connections":{"broadcast":{"type":"b"},"sahil":{"type":"u"}}},"irin":{"password":"test","connections":{"broadcast":{"type":"b"}}}}

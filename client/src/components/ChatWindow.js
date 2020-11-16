@@ -11,14 +11,33 @@ function Message(props) {
             marginRight: 'auto',
             justifyContent: props.fromSelf ? 'flex-end' : 'flex-start',
         }}>
-            <span style={{
-                padding: 10,
-                margin: '0 10px',
-                background: 'var(--surface)',
-                borderRadius: 5,
+            <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                maxWidth: '60%',
             }}>
-                {props.text}
-            </span>
+                {props.showSender && <span style={{
+                    margin: '0 10px',
+                    justifyContent: props.fromSelf ? 'flex-end' : 'flex-start',
+                }}>
+                    {props.sender}
+                </span>}
+                <span style={{
+                    padding: 10,
+                    margin: '0 10px',
+                    background: 'var(--surface)',
+                    borderRadius: 5,
+                    wordWrap: 'break-word',
+                }}>
+                    {props.text}
+                </span>
+                <span style={{
+                    margin: '0 10px',
+                    justifyContent: props.fromSelf ? 'flex-end' : 'flex-start',
+                }}>
+                    {props.timestamp}
+                </span>
+            </div>
         </div>
     );
 }
@@ -41,6 +60,10 @@ function ChatWindow(props) {
                         <Message
                             text={message.body}
                             fromSelf={message.sender === cookies.id}
+                            sender={message.sender}
+                            showSender={message.type !== 'u' && 
+                                message.sender !== cookies.id}
+                            timestamp={message.timestamp}
                             key={index}
                         />
                     );

@@ -1,4 +1,3 @@
-import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Sidepanel from './SidePanel';
@@ -19,6 +18,7 @@ function ChatContainer(props) {
             <Row>
                 <div style={{
                     width: '100%',
+                    margin: 0,
                     background: "var(--background)",
                     padding: 10,
                     fontSize: 20,
@@ -64,10 +64,11 @@ function ChatScreen(props) {
          * action: {
          *     "type" : "...",
          *     "message" : {
-         *         "type: : "...", // text message or other media
+         *         "contentType" : "..." // text or other media
+         *         "type: : "...", // unicast, multicast, broadcast
          *         "body" : "...",
          *         "timestamp" : "...",
-         *         "from" : "...",   // uid or gid or broadcast message
+         *         "receiver" : "...",   // uid or gid or broadcast message
          *         "sender" : "...", // Id of user who wrote the message
          *     }
          * }
@@ -83,11 +84,20 @@ function ChatScreen(props) {
                 break;
             }
             case 'append': {
-                if (messages[action.message.sender] === undefined)
-                    messages[action.message.sender] = [];
-                messages[action.message.sender].push(action.message);
-                newMessages = {...messages};
-                setMessages(newMessages);
+                if (action.message.type === 'u') {
+                    if (messages[action.message.sender] === undefined)
+                        messages[action.message.sender] = [];
+                    messages[action.message.sender].push(action.message);
+                    newMessages = {...messages};
+                    setMessages(newMessages);
+                }
+                else if (action.message.type === 'b') {
+                    if (messages[action.message.receiver] === undefined)
+                        messages[action.message.receiver] = [];
+                    messages[action.message.receiver].push(action.message);
+                    newMessages = {...messages};
+                    setMessages(newMessages);
+                }
                 break;
             }
             default: //donothing
@@ -95,19 +105,21 @@ function ChatScreen(props) {
     };
 
     // Function to append self messages
-    var sendMessage = (text, c_id) => {
+    var sendMessage = (text, c_id, type) => {
         var message = {
             contentType: "text",
-            type: "u",
+            type: type,
             body: text,
             receiver: c_id,
             sender: cookies.id,
-            timestamp: null,
+            timestamp: new Date().toLocaleString(),
         };
+        /*
         handleMessages({
             type: "append",
             message: message,
         });
+        */
         handleMessages({
             type: "self-append",
             message: message,
@@ -124,19 +136,28 @@ function ChatScreen(props) {
             });
         })
     }
-    useEffect(receiveMessage, []);
+    // eslint-disable-next-line
+    useEffect(receiveMessage, [props.socket]);
 
     return (
-        <Container fluid style={{
+        <div style={{
             background: "var(--background-secondary)",
+            display: 'flex',
+            flexDirection: 'row',
+            height: '100vh',
         }}>
-            <Row style={{height: "100vh"}}>
-                <Col
-                    xs={2}
-                    md={2}
-                >
-                    <Sidepanel history={props.history} />
-                </Col>
+            <div
+                style={{
+                    width: '150px',
+                }}
+            >
+                <Sidepanel history={props.history} />
+            </div>
+            <div
+                style={{
+                    width: 'calc(100vw - 150px)',
+                }}
+            >
                 {messages &&
                     <Route path="/:type/:c_id"
                         component={(props) =>
@@ -146,8 +167,8 @@ function ChatScreen(props) {
                                 onSend={sendMessage}
                             />}
                     />}
-            </Row>
-        </Container>
+            </div>
+        </div>
     );
 }
 
