@@ -105,9 +105,9 @@ function ChatScreen(props) {
     };
 
     // Function to append self messages
-    var sendMessage = (text, c_id, type) => {
+    var sendMessage = (text, c_id, type, contentType) => {
         var message = {
-            contentType: "text",
+            contentType: contentType,
             type: type,
             body: text,
             receiver: c_id,

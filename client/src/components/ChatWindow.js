@@ -29,7 +29,8 @@ function Message(props) {
                     borderRadius: 5,
                     wordWrap: 'break-word',
                 }}>
-                    {props.text}
+                    {props.contentType === 'text' && props.content}
+                    {props.contentType === 'img' && <img src={props.content} width="100px" />}
                 </span>
                 <span style={{
                     margin: '0 10px',
@@ -58,12 +59,13 @@ function ChatWindow(props) {
                 props.messages.map((message, index) => {
                     return (
                         <Message
-                            text={message.body}
+                            content={message.body}
                             fromSelf={message.sender === cookies.id}
                             sender={message.sender}
-                            showSender={message.type !== 'u' && 
+                            showSender={message.type !== 'u' &&
                                 message.sender !== cookies.id}
                             timestamp={message.timestamp}
+                            contentType={message.contentType}
                             key={index}
                         />
                     );
