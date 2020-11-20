@@ -98,7 +98,6 @@ var server = app.listen(5000, () => {
 const onlineUsers = {};
 
 const io = require('socket.io').listen(server);
-io.origins('*:*');
 io.on('connection', (socket) => {
     socket.on('user-connected', (user_id) => {
         if (user_id != null) {
@@ -109,14 +108,15 @@ io.on('connection', (socket) => {
 
     socket.on('send-message', (message) => {
         console.log(message);
-        if (message.type == 'u') {
+        if (message.type == 'u' && onlineUsers[message.receiver] !== undefined) {
             onlineUsers[message.receiver].emit('receive-message', message);
             console.log("Sending to : " + message.receiver);
         } else if (message.type == 'b')
             for (var user_id in onlineUsers) {
                 if (user_id != message.sender) {
                     console.log("Sending to : " + user_id);
-                    onlineUsers[user_id].emit('receive-message', message);
+                    if (onlineUsers[user_id] !== undefined)
+                        onlineUsers[user_id].emit('receive-message', message);
                 }
             }
     });

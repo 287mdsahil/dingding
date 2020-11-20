@@ -37,7 +37,7 @@ function LoginScreen(props) {
 			}).then(data => {
                 console.log(data);
                 if(data.user_id !== undefined)
-                    setCookie("id", data.user_id);
+                    setCookie("id", data.user_id, {path: "\\"});
 			});
 	};
 

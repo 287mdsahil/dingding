@@ -30,7 +30,7 @@ function Message(props) {
                     wordWrap: 'break-word',
                 }}>
                     {props.contentType === 'text' && props.content}
-                    {props.contentType === 'img' && <img src={props.content} width="100px" />}
+                    {props.contentType === 'img' && <img src={props.content} alt="" width="100px" />}
                 </span>
                 <span style={{
                     margin: '0 10px',

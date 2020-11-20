@@ -15,7 +15,6 @@ function App() {
         } else
             socket.emit('user-connected', cookies.id)
     };
-    CheckId();
     return (
         <div className="App">
             <Switch>
