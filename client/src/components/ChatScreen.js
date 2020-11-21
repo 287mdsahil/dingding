@@ -90,8 +90,7 @@ function ChatScreen(props) {
                     messages[action.message.sender].push(action.message);
                     newMessages = {...messages};
                     setMessages(newMessages);
-                }
-                else if (action.message.type === 'b') {
+                } else if (action.message.type === 'b' || action.message.type === 'm') {
                     if (messages[action.message.receiver] === undefined)
                         messages[action.message.receiver] = [];
                     messages[action.message.receiver].push(action.message);
@@ -151,7 +150,7 @@ function ChatScreen(props) {
                     width: '150px',
                 }}
             >
-                <Sidepanel history={props.history} />
+                <Sidepanel socket={props.socket} history={props.history} />
             </div>
             <div
                 style={{

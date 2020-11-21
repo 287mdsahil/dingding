@@ -39,6 +39,25 @@ app.post('/user/login', (req, res) => {
     }
 });
 
+app.post('/group', (req, res) => {
+    let c_id = req.body.c_id;
+    let c_data = req.body.c_data;
+    if (c_id == undefined || c_data == undefined || c_data.users === []) {
+        res.end();
+    } else {
+        console.log(c_id, c_data);
+        register.addGroupSync(c_id, c_data);
+        for (let i = 0; i < c_data.users.length; i++) {
+            console.log(c_data.users[i]);
+            if (onlineUsers[c_data.users[i]] !== undefined) {
+                onlineUsers[c_data.users[i]].emit('group-add', c_id);
+                register.addUserConnectionSync(c_data.users[i], c_id, c_data);
+            }
+        }
+        res.end();
+    }
+});
+
 app.get('/user/:id/connections', (req, res) => {
     var user_id = req.params.id;
     var connections = [];
@@ -71,12 +90,6 @@ app.post('/users/add', (req, res) => {
     res.end();
 });
 
-app.post('/groups/add', (req, res) => {
-    var group_id = req.body.group_id;
-    var users = req.body.users;
-    register.addGroupSync(group_id, users);
-});
-
 app.post('/users/remove', (req, res) => {
     var user_id = req.body.user_id;
     register.removeUserSync(user_id);
@@ -102,7 +115,7 @@ io.on('connection', (socket) => {
     socket.on('user-connected', (user_id) => {
         if (user_id != null) {
             onlineUsers[user_id] = socket;
-            console.log("Connected:" + user_id);
+            console.log("Connected:" + user_id + ":" + socket.id);
         }
     });
 
@@ -111,7 +124,7 @@ io.on('connection', (socket) => {
         if (message.type == 'u' && onlineUsers[message.receiver] !== undefined) {
             onlineUsers[message.receiver].emit('receive-message', message);
             console.log("Sending to : " + message.receiver);
-        } else if (message.type == 'b')
+        } else if (message.type == 'b') {
             for (var user_id in onlineUsers) {
                 if (user_id != message.sender) {
                     console.log("Sending to : " + user_id);
@@ -119,5 +132,14 @@ io.on('connection', (socket) => {
                         onlineUsers[user_id].emit('receive-message', message);
                 }
             }
+        } else if (message.type == 'm') {
+            let users = register.getGroupMembersSync(message.receiver);
+            console.log(users);
+            if (users !== undefined) {
+                for (let i = 0; i < users.length; i++)
+                    if (users[i] !== message.sender && onlineUsers[users[i]] !== undefined)
+                        onlineUsers[users[i]].emit('receive-message', message);
+            }
+        }
     });
 });

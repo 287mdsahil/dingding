@@ -51,6 +51,17 @@ function addUserSync(user_id, user_data) {
     setUsersSync(data);
 }
 
+function addGroupSync(group_id, group_data) {
+    var data = getUsersSync();
+    data[group_id] = group_data;
+    setUsersSync(data);
+}
+
+function getGroupMembersSync(group_id) {
+    var data = getUsersSync();
+    return data[group_id].users;
+}
+
 function removeUserSync(user_id) {
     var data = getUsersSync();
     delete data[user_id];
@@ -63,3 +74,5 @@ module.exports.addUserSync = addUserSync;
 module.exports.removeUserSync = removeUserSync;
 module.exports.getUserConnectionsSync = getUserConnectionsSync;
 module.exports.addUserConnectionSync = addUserConnectionSync;
+module.exports.addGroupSync = addGroupSync;
+module.exports.getGroupMembersSync = getGroupMembersSync;

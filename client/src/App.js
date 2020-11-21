@@ -6,14 +6,16 @@ import openSocket from 'socket.io-client';
 import {useCookies} from 'react-cookie';
 
 function App() {
-    const socket = openSocket("http://10.0.3.14:5000");
     const [cookies] = useCookies(["id"]);
-    var CheckId = () => {
+    const socket = openSocket("http://10.0.3.14:5000");
+    const CheckId = () => {
         let h = useHistory();
         if (!cookies.id || cookies.id === undefined) {
             h.push('/login/');
-        } else
+        } else {
+            console.log('user-connect from app');
             socket.emit('user-connected', cookies.id)
+        }
     };
     return (
         <div className="App">

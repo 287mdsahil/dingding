@@ -1,4 +1,5 @@
 import {useCookies} from 'react-cookie';
+import {useEffect} from 'react';
 
 function Message(props) {
     return (
@@ -46,6 +47,11 @@ function Message(props) {
 function ChatWindow(props) {
     const [cookies] = useCookies(["id"]);
 
+    const scrollToBottom = () => {
+        document.getElementById("dummy").scrollIntoView();
+    };
+    useEffect(scrollToBottom);
+
     return (
         <div style={{
             display: 'flex',
@@ -70,6 +76,7 @@ function ChatWindow(props) {
                         />
                     );
                 })}
+            <div id="dummy"></div>
         </div>
     );
 }
