@@ -26,7 +26,7 @@ function LoginScreen(props) {
 				"password": passwd.current,
 			}),
 		};
-		fetch("http://localhost:5000/user/login", postOptions)
+		fetch("/user/login", postOptions)
 			.then(response => {
 				if (!response.ok) {
 					console.log("Failed with HTTP code: " + response.status);
@@ -54,7 +54,7 @@ function LoginScreen(props) {
 				},
 			}),
 		};
-		fetch("http://localhost:5000/users/add", postOptions)
+		fetch("/users/add", postOptions)
 			.then(response => {
 				if (!response.ok) {
 					console.log("Failed with HTTP code: " + response.status);

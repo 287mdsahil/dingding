@@ -68,7 +68,7 @@ function Sidepanel(props) {
                     },
                 }),
             };
-            fetch("http://localhost:5000/group",postOptions)
+            fetch("/group",postOptions)
                 .then(response => {
                     if (!response.ok) {
                         console.log("Failed with HTTP code: " + response.status);
@@ -142,7 +142,7 @@ function Sidepanel(props) {
                     },
                 }),
             };
-            fetch("http://localhost:5000/user/" + cookies.id + "/connections/add",
+            fetch("/user/" + cookies.id + "/connections/add",
                 postOptions)
                 .then(response => {
                     if (!response.ok) {
@@ -204,7 +204,7 @@ function Sidepanel(props) {
 
     var fetchConnections = () => {
         if (connections == null)
-            fetch("http://localhost:5000/user/" + cookies.id + "/connections")
+            fetch("/user/" + cookies.id + "/connections")
                 .then(response => {
                     if (!response.ok) {
                         console.log("Failed with HTTP code: " + response.status);
