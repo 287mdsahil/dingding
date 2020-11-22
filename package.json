@@ -19,7 +19,6 @@
   },
   "scripts": {
     "start": "node server/server.js",
-    "test": "node server/server.js",
     "build" : "cd client && npm install && npm run build",
     "dev": "npx nodemon"
   },
