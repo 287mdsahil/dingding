@@ -7,7 +7,7 @@ import {useCookies} from 'react-cookie';
 
 function App() {
     const [cookies] = useCookies(["id"]);
-    const socket = openSocket("http://10.0.3.14:5000");
+    const socket = openSocket("https://mdsahil-dingding.herokuapp.com/");
     const CheckId = () => {
         let h = useHistory();
         if (!cookies.id || cookies.id === undefined) {
