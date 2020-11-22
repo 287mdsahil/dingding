@@ -105,7 +105,8 @@ app.post('/api/users/remove', (req, res) => {
     res.end();
 });
 
-var server = app.listen(5000, () => {
+const PORT = process.env.PORT || 8080;
+var server = app.listen(PORT, () => {
     var host = server.address().address;
     var port = server.address().port;
     console.log("Listening at http://%s:%s", host, port);
