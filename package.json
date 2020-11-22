@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Real time chat website",
   "main": "server/server.js",
+    "engines": {
+    "node": "15.x"
+  },
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
