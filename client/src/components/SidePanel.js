@@ -39,7 +39,7 @@ function Sidepanel(props) {
             }}
                 onClick={onClickHandler}
             >
-                {cprops.cid}
+            {cprops.data.type}/{cprops.cid}
             </div>
         );
     }
@@ -68,7 +68,7 @@ function Sidepanel(props) {
                     },
                 }),
             };
-            fetch("/group",postOptions)
+            fetch("/api/group",postOptions)
                 .then(response => {
                     if (!response.ok) {
                         console.log("Failed with HTTP code: " + response.status);
@@ -142,7 +142,7 @@ function Sidepanel(props) {
                     },
                 }),
             };
-            fetch("/user/" + cookies.id + "/connections/add",
+            fetch("/api/user/" + cookies.id + "/connections/add",
                 postOptions)
                 .then(response => {
                     if (!response.ok) {
@@ -204,7 +204,7 @@ function Sidepanel(props) {
 
     var fetchConnections = () => {
         if (connections == null)
-            fetch("/user/" + cookies.id + "/connections")
+            fetch("/api/user/" + cookies.id + "/connections")
                 .then(response => {
                     if (!response.ok) {
                         console.log("Failed with HTTP code: " + response.status);
@@ -215,9 +215,9 @@ function Sidepanel(props) {
                 }).then(data => {
                     setConnections(data);
                 })
-                .catch(err => {
+                /*.catch(err => {
                     console.log(err);
-                });
+                });*/
     };
     fetchConnections();
 

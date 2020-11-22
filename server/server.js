@@ -7,21 +7,27 @@ var app = express();
 app.use(cors());
 app.use(express.json());
 
-app.options('/login', function (req, res) {
+// Serving client site 
+app.use(express.static(path.join(__dirname, '../client/build')));
+app.get('/client/*', function (req, res) {
+    res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
+
+app.options('/api/login', function (req, res) {
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader('Access-Control-Allow-Methods', '*');
     res.setHeader("Access-Control-Allow-Headers", "*");
     res.end();
 });
 
-app.get('/users', (req, res) => {
+app.get('/api/users', (req, res) => {
     var users = register.getUsersSync();
     res.writeHead(200, {'Content-Type': 'application/json'});
     res.write(JSON.stringify(users));
     res.end();
 });
 
-app.post('/user/login', (req, res) => {
+app.post('/api/user/login', (req, res) => {
     var user_id = req.body.user_id;
     var password = req.body.password;
     var user_data = register.getUserSync(user_id);
@@ -39,7 +45,7 @@ app.post('/user/login', (req, res) => {
     }
 });
 
-app.post('/group', (req, res) => {
+app.post('/api/group', (req, res) => {
     let c_id = req.body.c_id;
     let c_data = req.body.c_data;
     if (c_id == undefined || c_data == undefined || c_data.users === []) {
@@ -58,7 +64,7 @@ app.post('/group', (req, res) => {
     }
 });
 
-app.get('/user/:id/connections', (req, res) => {
+app.get('/api/user/:id/connections', (req, res) => {
     var user_id = req.params.id;
     var connections = [];
     if (user_id != undefined)
@@ -68,7 +74,7 @@ app.get('/user/:id/connections', (req, res) => {
     res.end();
 });
 
-app.post('/user/:id/connections/add', (req, res) => {
+app.post('/api/user/:id/connections/add', (req, res) => {
     var user_id = req.params.id;
     var c_id = req.body.c_id;
     var c_data = req.body.c_data;
@@ -79,7 +85,7 @@ app.post('/user/:id/connections/add', (req, res) => {
     res.end();
 });
 
-app.post('/users/add', (req, res) => {
+app.post('/api/users/add', (req, res) => {
     var user_id = req.body.user_id;
     var user_data = req.body.user_data;
     register.addUserSync(user_id, user_data);
@@ -90,7 +96,7 @@ app.post('/users/add', (req, res) => {
     res.end();
 });
 
-app.post('/users/remove', (req, res) => {
+app.post('/api/users/remove', (req, res) => {
     var user_id = req.body.user_id;
     register.removeUserSync(user_id);
     res.writeHead(200, {'Content-Type': 'application/json'});
@@ -112,8 +118,10 @@ const onlineUsers = {};
 
 const io = require('socket.io').listen(server);
 io.on('connection', (socket) => {
-    socket.on('user-connected', (user_id) => {
-        if (user_id != null) {
+    let user_id = null;
+    socket.on('user-connected', (id) => {
+        if (id != null) {
+            user_id = id;
             onlineUsers[user_id] = socket;
             console.log("Connected:" + user_id + ":" + socket.id);
         }
@@ -141,5 +149,10 @@ io.on('connection', (socket) => {
                         onlineUsers[users[i]].emit('receive-message', message);
             }
         }
+    });
+
+    socket.on('disconnect', () => {
+        console.log("Disconnected:" + user_id + ":" + socket.id);
+        delete onlineUsers[user_id];
     });
 });

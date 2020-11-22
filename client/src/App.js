@@ -13,7 +13,6 @@ function App() {
         if (!cookies.id || cookies.id === undefined) {
             h.push('/login/');
         } else {
-            console.log('user-connect from app');
             socket.emit('user-connected', cookies.id)
         }
     };

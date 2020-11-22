@@ -15,6 +15,7 @@
     "nodemon": "^2.0.6"
   },
   "scripts": {
+    "start": "node server/server.js",
     "test": "node server/server.js",
     "dev": "npx nodemon"
   },
